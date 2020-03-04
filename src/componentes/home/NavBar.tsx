@@ -5,6 +5,6 @@ export const NavBar = () => (
   <>
     <Link to="/" replace={true} className="link">Home</Link>
     <span> </span>
-    <Link to="/productos">Productos</Link>
+    <Link to="/productos" className="link">Productos</Link>
   </>
 );

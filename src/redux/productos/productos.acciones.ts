@@ -27,9 +27,9 @@ export function eliminarProducto(producto: Producto): TiposAccionesProducto {
 };
 
 export function listarProductosAsync(numeroPagina: number) {
-  return function (dispacth: any) {
+  return function (dispatch: any) {
     AgenteProductos.Articles.all(numeroPagina).then((datos: any) =>
-      dispacth(listarProductos(datos.articles, datos.articlesCount))
+      dispatch(listarProductos(datos.articles, datos.articlesCount))
     );
   }
 

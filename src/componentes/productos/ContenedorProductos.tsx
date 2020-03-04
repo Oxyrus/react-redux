@@ -1,52 +1,57 @@
-import React from 'react';
-import { ListaProductos } from './ListaProductos';
-import { AgregarProducto } from './AgregarProducto';
-import { Producto } from './Producto';
-import { connect } from "react-redux";
-import { agregarNuevoProducto, eliminarProducto, listarProductosAsync } from "../../redux/productos/productos.acciones"
-import { PaginadorProductos } from './PaginadorProductos';
-import { EstadoGeneral } from '../../redux/EstadoGeneral';
+import React, { useEffect } from "react";
+import { ListaProductos } from "./ListaProductos";
+import { AgregarProducto } from "./AgregarProducto";
+import { Producto } from "./Producto";
+import { useSelector, useDispatch } from "react-redux";
+import {
+  agregarNuevoProducto,
+  eliminarProducto as eliminarProductoAction,
+  listarProductosAsync
+} from "../../redux/productos/productos.acciones";
+import { PaginadorProductos } from "./PaginadorProductos";
 
-
-
-interface Props {
-    productos: Array<Producto>,
-    listarProductos: (numeroPagina: number) => void
-    agregarNuevoProducto: (productos: Producto) => void,
-    eliminarProducto: (productos: Producto) => void,
-    cantidadTotalProducto: number
+interface EstadoProducto {
+  productos: Producto[];
+  cantidadTotalProducto: number;
 }
 
-class ContenedorProductos extends React.Component<Props, any> {
+const ContenedorProductos = () => {
+  const state = useSelector(
+    ({ productosReducer }: { productosReducer: EstadoProducto }) =>
+      productosReducer
+  );
+  const dispatch = useDispatch();
 
+  const agregarProducto = (producto: Producto) => {
+    dispatch(agregarNuevoProducto(producto));
+  };
 
-    componentDidMount() {
-        this.props.listarProductos(1);
-    }
+  const cambiarPagina = (numeroPagina: number) => {
+    dispatch(listarProductosAsync(numeroPagina));
+  };
 
-    render() {
+  const eliminarProducto = (producto: Producto) => {
+    dispatch(eliminarProductoAction(producto));
+  };
 
-        const { productos, cantidadTotalProducto, listarProductos } = this.props;
+  useEffect(() => {
+    dispatch(listarProductosAsync(1));
+  }, []);
 
-        return (
-            <React.Fragment>
-                <ListaProductos productos={productos} onClickEliminarProducto={this.props.eliminarProducto} />
-                <AgregarProducto onClickAgregarProducto={this.props.agregarNuevoProducto} />
-                <PaginadorProductos cantidadTotalProductos={cantidadTotalProducto} onClickCambiarPagina={listarProductos} />
-            </React.Fragment>
-        );
-    }
-}
+  return (
+    <>
+      <ListaProductos
+        productos={state.productos}
+        onClickEliminarProducto={eliminarProducto}
+      />
 
-const mapStateToProps = (state: EstadoGeneral) => {
-    return state.productos;
+      <AgregarProducto onClickAgregarProducto={agregarProducto} />
+      <PaginadorProductos
+        cantidadTotalProductos={state.cantidadTotalProducto}
+        onClickCambiarPagina={cambiarPagina}
+      />
+    </>
+  );
 };
 
-export default connect(
-    mapStateToProps,
-    {
-        listarProductos: listarProductosAsync,
-        agregarNuevoProducto: agregarNuevoProducto,
-        eliminarProducto: eliminarProducto
-    }
-)(ContenedorProductos);
+export default ContenedorProductos;
