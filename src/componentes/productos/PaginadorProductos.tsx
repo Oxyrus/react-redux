@@ -1,40 +1,37 @@
 import React from 'react'
+import { useDispatch } from 'react-redux';
+import { listarProductosAsync } from '../../redux/productos/productos.acciones';
 
-interface props {
+interface Props {
     cantidadTotalProductos: number,
-    onClickCambiarPagina: (numeroPagina: number) => void
 }
 
-export class PaginadorProductos extends React.Component<props, any> {
+export const PaginadorProductos = (props: Props) => {
+  const { cantidadTotalProductos } = props;
+  const dispatch = useDispatch();
 
+  if (cantidadTotalProductos <= 10) {
+    return null;
+  }
 
-    render() {
-        const { onClickCambiarPagina, cantidadTotalProductos } = this.props;
+  const rango = [];
+  for (let i = 0; i < Math.ceil(cantidadTotalProductos / 10); ++i) {
+    rango.push(i);
+  }
 
-        if (cantidadTotalProductos <= 10) {
-            return null;
-        }
-
-        const rango = [];
-        for (let i = 0; i < Math.ceil(cantidadTotalProductos / 10); ++i) {
-            rango.push(i);
-        }
-
-        return (
-            <nav>
-                    {
-                        rango.map(index => {
-                            return (
-                                <button
-                                    onClick={() => onClickCambiarPagina(index)}
-                                    key={index.toString()}>
-                                        {index + 1}
-                                </button>
-                            );
-                        })
-                    }
-            </nav>
-        );
-    }
-
+  return (
+    <nav>
+      {
+        rango.map(index => {
+          return (
+            <button
+              onClick={() => dispatch(listarProductosAsync(index))}
+              key={index.toString()}>
+                  {index + 1}
+            </button>
+          );
+        })
+      }
+    </nav>
+  );
 }

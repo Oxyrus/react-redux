@@ -4,11 +4,10 @@ import { EliminarProducto } from "./EliminarProducto"
 
 export interface Props {
   productos: Array<Producto>,
-  onClickEliminarProducto: (productos: Producto) => void
 }
 
 export const ListaProductos = (props: Props) => {
-  const { productos, onClickEliminarProducto } = props;
+  const { productos } = props;
   return (
     <table>
       <thead>
@@ -37,8 +36,7 @@ export const ListaProductos = (props: Props) => {
             </td>
             <td>
               <EliminarProducto
-                producto={producto}
-                onClickEliminarProducto={onClickEliminarProducto} />
+                producto={producto} />
             </td>
           </tr>
         ))}
